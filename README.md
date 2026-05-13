@@ -45,20 +45,27 @@ the correct path regardless of its answer, so each step is scored independently.
 node score.js [options]
 
 Options:
-  -n, --count <n>        number of snippets to test (default: 3)
-  -p, --provider <name>  filter to a specific provider
-  -m, --model <name>     LLM model to use (default: claude-haiku-4-5)
-  --no-system-prompt     disable the system prompt (send bare queries)
+  -n, --count <n>             number of snippets to test (default: 3)
+  -p, --provider <name>       filter to a specific provider
+  -m, --model <name>          LLM model to use (default: claude-haiku-4-5)
+  -s, --system-prompt <file>  path to a text file containing the system prompt
+  -o, --output <dir>          write CSV results to this directory
 
 Examples:
   node score.js -n 5
   node score.js -n 5 -p olympics
   node score.js -n 10 -p worldbank -m claude-sonnet-4-6
-  node score.js -n 5 -p olympics --no-system-prompt
+  node score.js -n 5 -p olympics -s prompts/default-prompt.txt
+  node score.js -n 20 -s prompts/default-prompt.txt --output results
 ```
 
-A system prompt with per-provider navigation rules is included by default.
-Use `--no-system-prompt` to measure the baseline without it.
+Omitting `-s` sends bare queries with no system prompt (useful as a baseline).
+The default system prompt lives in `prompts/default-prompt.txt` and can be
+copied and modified to experiment with different phrasings.
+
+CSV files are named `{model}__{prompt}__{provider}__{timestamp}.csv` and contain
+one row per chain with columns `snippet_id, snippet_title, chain_index, provider,
+total_steps, correct_steps`.
 
 ### `extract.js` — Ground-truth extraction
 
@@ -71,6 +78,8 @@ node extract.js
 
 For `shared` provider chains, adds a `hint` field (e.g. `"Use data source from May 2017
 named 'Turing People'"`) that is passed to the LLM to avoid impossible date-guessing.
+For snippets with multiple chains, merges per-chain hints from `data/extra-hints.json`
+to help the LLM distinguish between chains (e.g. "This chain gets data for China").
 
 ### `verifier.js` — Chain integrity check
 
@@ -107,6 +116,10 @@ config.js         API key — gitignored, create manually
 data/
   snippets-thegamma.json   Raw gallery snippet data (source)
   eval-snippets.json       Extracted chains used by score/verifier
+  extra-hints.json         Handwritten per-chain hints for multi-chain snippets
+
+prompts/
+  default-prompt.txt       Default system prompt with per-provider navigation rules
 
 paper/
   paper-vlhcc.tex          VLHcc paper describing The Gamma providers
