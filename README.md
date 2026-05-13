@@ -50,22 +50,39 @@ Options:
   -m, --model <name>          LLM model to use (default: claude-haiku-4-5)
   -s, --system-prompt <file>  path to a text file containing the system prompt
   -o, --output <dir>          write CSV results to this directory
+  -r, --resume <file>         resume an interrupted run: skip already-scored chains
+                              and append new rows to the existing CSV
 
 Examples:
   node score.js -n 5
   node score.js -n 5 -p olympics
   node score.js -n 10 -p worldbank -m claude-sonnet-4-6
   node score.js -n 5 -p olympics -s prompts/default-prompt.txt
-  node score.js -n 20 -s prompts/default-prompt.txt --output results
+  node score.js -n 61 -s prompts/default-prompt.txt --output results
+  node score.js -n 61 -s prompts/default-prompt.txt --resume results/run.csv
 ```
 
 Omitting `-s` sends bare queries with no system prompt (useful as a baseline).
 The default system prompt lives in `prompts/default-prompt.txt` and can be
 copied and modified to experiment with different phrasings.
 
+Options are capped at 500 when a member list is very large (e.g. the full athlete
+roster), to stay within API token limits. The correct option is always included in
+the sample.
+
 CSV files are named `{model}__{prompt}__{provider}__{timestamp}.csv` and contain
 one row per chain with columns `snippet_id, snippet_title, chain_index, provider,
 total_steps, correct_steps`.
+
+### `run-eval.sh` — Full evaluation across all configurations
+
+Runs `score.js` across four configurations (haiku/opus × no-prompt/with-prompt)
+for all 61 snippets. Automatically detects partial CSVs in `results/` and resumes
+them rather than starting over.
+
+```
+bash run-eval.sh
+```
 
 ### `extract.js` — Ground-truth extraction
 
@@ -108,6 +125,7 @@ score.js          Main evaluation script
 extract.js        Extracts chains from gallery snippets
 verifier.js       Verifies chains against the live server
 cyoa.js           Interactive member-tree explorer
+run-eval.sh       Runs all 4 configurations end-to-end
 
 providers.js      Shared provider setup, type resolution helpers
 log.js            Coloured logging helpers (clr, log)
@@ -121,6 +139,11 @@ data/
 prompts/
   default-prompt.txt       Default system prompt with per-provider navigation rules
 
+results/
+  *.csv                    Result CSVs from evaluation runs
+  results.ipynb            Jupyter notebook with analysis and charts
+  *.png                    Charts exported by the notebook
+
 paper/
   paper-vlhcc.tex          VLHcc paper describing The Gamma providers
   paper-cyoa.tex           Related paper; used to inform the system prompt
@@ -128,15 +151,18 @@ paper/
 
 ## Results
 
-Approximate LLM accuracy (claude-haiku-4-5, with system prompt) on the first 20 snippets:
+LLM accuracy on all 61 snippets (665 steps total):
 
-| Provider    | Accuracy |
-|-------------|----------|
-| olympics    | ~57%     |
-| worldbank   | ~67%     |
-| expenditure | ~61%     |
-| shared      | ~69%     |
-| drWho       | ~71%     |
-| **overall** | **~59%** |
+| Provider    | Haiku, no prompt | Haiku, with prompt | Opus, no prompt | Opus, with prompt |
+|-------------|------------------|--------------------|-----------------|-------------------|
+| olympics    | 47%              | 60%                | 64%             | 80%               |
+| worldbank   | 63%              | 67%                | 75%             | 79%               |
+| shared      | 56%              | 68%                | 55%             | 77%               |
+| **overall** | **54%**          | **65%**            | **60%**         | **79%**           |
 
-Without the system prompt the overall baseline is roughly 40–45%.
+The system prompt (per-provider navigation rules) adds roughly 10–15 pp for Haiku and
+~20 pp for Opus. `expenditure` and `drWho` are excluded from the per-provider table due
+to too few chains for reliable estimates; they are included in the `overall` figures.
+
+See `results.ipynb` for full analysis including prompt lift by provider, accuracy vs
+chain length, hardest snippets, and a per-chain Haiku vs Opus comparison.
