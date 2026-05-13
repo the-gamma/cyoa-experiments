@@ -159,6 +159,7 @@ async function main() {
     .option('-m, --model <name>', 'LLM model to use', 'claude-haiku-4-5')
     .option('-s, --system-prompt <file>', 'path to a text file containing the system prompt')
     .option('-o, --output <dir>', 'directory to write CSV results to (created if absent)')
+    .option('-r, --resume <file>', 'resume an interrupted run: skip already-scored chains and append to this CSV')
     .addHelpText('after', `
 Known models:
   ${KNOWN_MODELS.join('\n  ')}
@@ -168,7 +169,8 @@ Examples:
   node score.js -n 5 -p olympics
   node score.js -n 10 -p worldbank -m claude-sonnet-4-6
   node score.js -n 5 -p olympics -s prompts/default-prompt.txt
-  node score.js -n 20 -s prompts/default-prompt.txt --output results`);
+  node score.js -n 20 -s prompts/default-prompt.txt --output results
+  node score.js -n 20 -s prompts/default-prompt.txt --resume results/run.csv`);
 
   if (process.argv.length <= 2) { program.help(); }
 
@@ -208,7 +210,18 @@ Examples:
   log.trace(`Model: ${MODEL}   Prompt: ${promptLabel}${providerFilter ? `   Provider: ${providerFilter}   ${testSnippets.length} snippet(s) matched` : ''}\n`);
 
   let csvPath = null;
-  if (opts.output) {
+  const doneChains = new Set(); // "snippetId:chainIdx" pairs already in CSV
+
+  if (opts.resume) {
+    csvPath = opts.resume;
+    const lines = readFileSync(csvPath, 'utf8').trim().split('\n').slice(1); // skip header
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const [id, , chainIdx] = line.split(',');
+      if (id) doneChains.add(`${id}:${chainIdx}`);
+    }
+    log.trace(`Resuming ${csvPath} — skipping ${doneChains.size} already-scored chain(s)\n`);
+  } else if (opts.output) {
     const ts = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 15);
     const prov = providerFilter ?? 'all';
     const filename = `${MODEL}__${promptLabel}__${prov}__${ts}.csv`;
@@ -224,6 +237,10 @@ Examples:
     log.header(`#${snippet.id}: ${snippet.title}`);
 
     for (const [chainIdx, chain] of snippet.chains.entries()) {
+      if (doneChains.has(`${snippet.id}:${chainIdx}`)) {
+        log.trace(`  [${chain.provider}] skipped (already scored)`);
+        continue;
+      }
       log.trace(`  [${chain.provider}] ${chain.steps.length - 1} steps to score`);
 
       let chainTotal = 0, chainCorrect = 0;
