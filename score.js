@@ -11,6 +11,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
+const MAX_OPTIONS = 500; // cap to stay within API token limits
+
 const SERIES_OPS = new Set([
   'get series', 'get the data',
   'with key', 'and value',
@@ -111,12 +113,24 @@ async function* scoreChain(entities, snippet, chain, systemPrompt) {
     const truthIdx = members.findIndex(m => m.Name === baseName || m.Name === step);
     if (truthIdx === -1) break;
 
-    // Signal that we're about to ask, so the caller can show a spinner
-    yield { pending: true, step, memberCount: members.length };
+    // If the member list is huge, sample MAX_OPTIONS entries keeping the correct one
+    let askMembers = members;
+    let askTruthIdx = truthIdx;
+    if (members.length > MAX_OPTIONS) {
+      const others = members.filter((_, i) => i !== truthIdx)
+                            .sort(() => Math.random() - 0.5)
+                            .slice(0, MAX_OPTIONS - 1);
+      askTruthIdx = Math.floor(Math.random() * MAX_OPTIONS);
+      others.splice(askTruthIdx, 0, members[truthIdx]);
+      askMembers = others;
+    }
 
-    const llmIdx = await askLLM(snippet.title, snippet.description, chain.hint ?? null, chain.chainHint ?? null, path, members, systemPrompt);
-    const correct = llmIdx === truthIdx;
-    const llmPick = llmIdx !== null ? members[llmIdx]?.Name ?? null : null;
+    // Signal that we're about to ask, so the caller can show a spinner
+    yield { pending: true, step, memberCount: members.length, truncated: askMembers.length < members.length };
+
+    const llmIdx = await askLLM(snippet.title, snippet.description, chain.hint ?? null, chain.chainHint ?? null, path, askMembers, systemPrompt);
+    const correct = llmIdx === askTruthIdx;
+    const llmPick = llmIdx !== null ? askMembers[llmIdx]?.Name ?? null : null;
 
     yield { pending: false, step, llmPick, correct };
 
@@ -216,7 +230,8 @@ Examples:
 
       for await (const ev of scoreChain(entities, snippet, chain, systemPrompt)) {
         if (ev.pending) {
-          log.write(clr.trace(`    "${ev.step}" (${ev.memberCount} options)... `));
+          const countStr = ev.truncated ? `${MAX_OPTIONS}/${ev.memberCount} options` : `${ev.memberCount} options`;
+          log.write(clr.trace(`    "${ev.step}" (${countStr})... `));
           continue;
         }
 
