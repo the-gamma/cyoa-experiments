@@ -50,7 +50,7 @@ async function withRetry(fn, maxAttempts = 5) {
 
 // ── LLM ───────────────────────────────────────────────────────────────────────
 
-async function askLLM(title, description, hint, path, members, systemPrompt) {
+async function askLLM(title, description, hint, chainHint, path, members, systemPrompt) {
   const pathStr = path.length > 1
     ? path.slice(1).map(s => `"${s}"`).join(' > ')
     : '(just started)';
@@ -58,7 +58,7 @@ async function askLLM(title, description, hint, path, members, systemPrompt) {
 
   const prompt =
 `Goal: ${title}
-${description ? `Description: ${description}\n` : ''}${hint ? `Hint: ${hint}\n` : ''}
+${description ? `Description: ${description}\n` : ''}${chainHint ? `Context: ${chainHint}\n` : ''}${hint ? `Hint: ${hint}\n` : ''}
 Steps chosen so far: ${pathStr}
 
 Choose the next step from these options:
@@ -114,7 +114,7 @@ async function* scoreChain(entities, snippet, chain, systemPrompt) {
     // Signal that we're about to ask, so the caller can show a spinner
     yield { pending: true, step, memberCount: members.length };
 
-    const llmIdx = await askLLM(snippet.title, snippet.description, chain.hint ?? null, path, members, systemPrompt);
+    const llmIdx = await askLLM(snippet.title, snippet.description, chain.hint ?? null, chain.chainHint ?? null, path, members, systemPrompt);
     const correct = llmIdx === truthIdx;
     const llmPick = llmIdx !== null ? members[llmIdx]?.Name ?? null : null;
 

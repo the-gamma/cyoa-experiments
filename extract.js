@@ -67,6 +67,9 @@ function parseSteps(chain) {
 const snippets = JSON.parse(
   readFileSync(join(__dirname, 'data', 'snippets-thegamma.json'), 'utf8')
 );
+const extraHints = JSON.parse(
+  readFileSync(join(__dirname, 'data', 'extra-hints.json'), 'utf8')
+);
 
 const results = [];
 let skippedNoProvider = 0, skippedHidden = 0;
@@ -82,13 +85,15 @@ for (const s of snippets) {
     id: s.id,
     title: s.title,
     description: s.description,
-    chains: providerChains.map(c => {
+    chains: providerChains.map((c, i) => {
       const provider = getProvider(c);
       const steps = parseSteps(c);
       const chain = { provider, steps };
       if (provider === 'shared' && steps.length >= 4 && (steps[1] === 'by date' || steps[1] === 'by tag')) {
         chain.hint = `Use data source from ${steps[2]} named '${steps[3]}'`;
       }
+      const chainHints = extraHints[String(s.id)];
+      if (chainHints?.[i]) chain.chainHint = chainHints[i];
       return chain;
     }),
   });

@@ -1,0 +1,49 @@
+{
+  "42": [
+    "This chain gets US GDP per capita from the World Bank",
+    "This chain gets Mark Spitz's Olympic gold medals by year"
+  ],
+  "45": [
+    "This chain gets CO2 emissions data for the United States",
+    "This chain gets CO2 emissions data for China"
+  ],
+  "47": [
+    "This chain gets male unemployment data for Italy",
+    "This chain gets female unemployment data for Italy"
+  ],
+  "50": [
+    "This chain filters athletes named James and gets a smoothed series by year",
+    "This chain filters athletes named John and gets a smoothed series by year"
+  ],
+  "64": [
+    "This chain gets the male adult mortality rate for the United States",
+    "This chain gets the female adult mortality rate for the United States"
+  ],
+  "66": [
+    "This chain gets university enrolment data for France",
+    "This chain gets university enrolment data for Denmark",
+    "This chain gets university enrolment data for the United Kingdom"
+  ],
+  "71": [
+    "This chain gets university enrolment data for France",
+    "This chain gets university enrolment data for Denmark",
+    "This chain gets university enrolment data for the United Kingdom",
+    "This chain gets university enrolment data for Brazil"
+  ],
+  "83": [
+    "This chain gets CO2 emissions data for the United States",
+    "This chain gets CO2 emissions data for China"
+  ],
+  "85": [
+    "This chain gets Michael Phelps's total gold medals",
+    "This chain gets gold medal totals by country (for comparison)"
+  ],
+  "86": [
+    "This chain gets Michael Phelps's total gold medals",
+    "This chain gets gold medal totals by country (for comparison)"
+  ],
+  "90": [
+    "This chain gets CO2 emissions data for the United States",
+    "This chain gets CO2 emissions data for China"
+  ]
+}

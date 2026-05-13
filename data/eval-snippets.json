@@ -485,7 +485,8 @@
           "United States",
           "Economy & Growth",
           "GDP per capita (current US$)"
-        ]
+        ],
+        "chainHint": "This chain gets US GDP per capita from the World Bank"
       },
       {
         "provider": "olympics",
@@ -504,7 +505,8 @@
           "get series",
           "with key Year",
           "and value Gold"
-        ]
+        ],
+        "chainHint": "This chain gets Mark Spitz's Olympic gold medals by year"
       }
     ]
   },
@@ -563,7 +565,8 @@
           "United States",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for the United States"
       },
       {
         "provider": "worldbank",
@@ -573,7 +576,8 @@
           "China",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for China"
       }
     ]
   },
@@ -609,7 +613,8 @@
           "Italy",
           "Education",
           "Unemployment, male (% of male labor force)"
-        ]
+        ],
+        "chainHint": "This chain gets male unemployment data for Italy"
       },
       {
         "provider": "worldbank",
@@ -619,7 +624,8 @@
           "Italy",
           "Education",
           "Unemployment, female (% of female labor force)"
-        ]
+        ],
+        "chainHint": "This chain gets female unemployment data for Italy"
       }
     ]
   },
@@ -699,7 +705,8 @@
           "and value Athlete",
           "setProperties(seriesName=\"James\")"
         ],
-        "hint": "Use data source from June 2017 named 'Olympic medalists'"
+        "hint": "Use data source from June 2017 named 'Olympic medalists'",
+        "chainHint": "This chain filters athletes named James and gets a smoothed series by year"
       },
       {
         "provider": "shared",
@@ -728,7 +735,8 @@
           "and value Athlete",
           "setProperties(seriesName=\"John\")"
         ],
-        "hint": "Use data source from June 2017 named 'Olympic medalists'"
+        "hint": "Use data source from June 2017 named 'Olympic medalists'",
+        "chainHint": "This chain filters athletes named John and gets a smoothed series by year"
       }
     ]
   },
@@ -987,7 +995,8 @@
           "Health",
           "Mortality rate, adult, male (per 1,000 male adults)",
           "map(fun x -> x / 1000)"
-        ]
+        ],
+        "chainHint": "This chain gets the male adult mortality rate for the United States"
       },
       {
         "provider": "worldbank",
@@ -998,7 +1007,8 @@
           "Health",
           "Mortality rate, adult, female (per 1,000 female adults)",
           "map(fun x -> x / 1000)"
-        ]
+        ],
+        "chainHint": "This chain gets the female adult mortality rate for the United States"
       }
     ]
   },
@@ -1036,7 +1046,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"France\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for France"
       },
       {
         "provider": "worldbank",
@@ -1047,7 +1058,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"Denmark\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for Denmark"
       },
       {
         "provider": "worldbank",
@@ -1058,7 +1070,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"United Kingdom\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for the United Kingdom"
       }
     ]
   },
@@ -1169,7 +1182,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"France\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for France"
       },
       {
         "provider": "worldbank",
@@ -1180,7 +1194,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"Denmark\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for Denmark"
       },
       {
         "provider": "worldbank",
@@ -1191,7 +1206,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"United Kingdom\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for the United Kingdom"
       },
       {
         "provider": "worldbank",
@@ -1202,7 +1218,8 @@
           "Education",
           "Enrolment in tertiary education per 100,000 inhabitants, both sexes",
           "setProperties(seriesName=\"Brazil\")"
-        ]
+        ],
+        "chainHint": "This chain gets university enrolment data for Brazil"
       }
     ]
   },
@@ -1435,7 +1452,8 @@
           "United States",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for the United States"
       },
       {
         "provider": "worldbank",
@@ -1445,7 +1463,8 @@
           "China",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for China"
       }
     ]
   },
@@ -1498,7 +1517,8 @@
           "get series",
           "with key Athlete",
           "and value Gold"
-        ]
+        ],
+        "chainHint": "This chain gets Michael Phelps's total gold medals"
       },
       {
         "provider": "olympics",
@@ -1517,7 +1537,8 @@
           "get series",
           "with key Team",
           "and value Gold"
-        ]
+        ],
+        "chainHint": "This chain gets gold medal totals by country (for comparison)"
       }
     ]
   },
@@ -1541,7 +1562,8 @@
           "get series",
           "with key Athlete",
           "and value Gold"
-        ]
+        ],
+        "chainHint": "This chain gets Michael Phelps's total gold medals"
       },
       {
         "provider": "olympics",
@@ -1560,7 +1582,8 @@
           "get series",
           "with key Team",
           "and value Gold"
-        ]
+        ],
+        "chainHint": "This chain gets gold medal totals by country (for comparison)"
       }
     ]
   },
@@ -1610,7 +1633,8 @@
           "United States",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for the United States"
       },
       {
         "provider": "worldbank",
@@ -1620,7 +1644,8 @@
           "China",
           "Climate Change",
           "CO2 emissions (kt)"
-        ]
+        ],
+        "chainHint": "This chain gets CO2 emissions data for China"
       }
     ]
   }
